@@ -152,16 +152,65 @@ let chestRewards = [], allowedOpens = 0, openedCount = 0, openedIndexes = new Se
 let audioCtx = null, tickInterval = null, musicLoopId = null;
 const $ = (id) => document.getElementById(id);
 
-function ensureAudio(){ if (!audioCtx) { const AC = window.AudioContext || window.webkitAudioContext; audioCtx = new AC(); } if (audioCtx.state === "suspended") audioCtx.resume(); }
+async function ensureAudio(){
+  if (!audioCtx) {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    audioCtx = new AC();
+  }
+  if (audioCtx.state === "suspended") {
+    try { await audioCtx.resume(); } catch (e) {}
+  }
+}
 function clickEnabled(){ return $("clickToggle")?.checked !== false; }
 function tickEnabled(){ return $("tickToggle")?.checked !== false; }
 function musicEnabled(){ return $("musicToggle")?.checked === true; }
-function tone(freq=440,duration=0.12,type="sine",gainValue=0.04,when=0){ ensureAudio(); const now = audioCtx.currentTime + when; const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain(); osc.type = type; osc.frequency.setValueAtTime(freq, now); gain.gain.setValueAtTime(0.0001, now); gain.gain.exponentialRampToValueAtTime(gainValue, now + 0.01); gain.gain.exponentialRampToValueAtTime(0.0001, now + duration); osc.connect(gain).connect(audioCtx.destination); osc.start(now); osc.stop(now + duration + 0.02); }
-function playClickSound(){ if(!clickEnabled()) return; tone(620,0.08,"triangle",0.05,0); tone(860,0.10,"sine",0.03,0.05); }
-function startTicking(){ stopTicking(); if(!tickEnabled()) return; ensureAudio(); tickInterval = setInterval(() => { if (!tickEnabled() || !currentMode || isSubmitted) return; tone(920,0.03,"square",0.012,0); }, 900); }
+function tone(freq=440,duration=0.12,type="sine",gainValue=0.04,when=0){
+  if (!audioCtx) return;
+  const now = audioCtx.currentTime + when;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = type;
+  osc.frequency.setValueAtTime(freq, now);
+  gain.gain.setValueAtTime(0.0001, now);
+  gain.gain.exponentialRampToValueAtTime(gainValue, now + 0.01);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+  osc.connect(gain).connect(audioCtx.destination);
+  osc.start(now);
+  osc.stop(now + duration + 0.03);
+}
+async function playClickSound(){
+  if(!clickEnabled()) return;
+  await ensureAudio();
+  tone(620,0.08,"triangle",0.05,0);
+  tone(860,0.10,"sine",0.03,0.05);
+}
+async function startTicking(){
+  stopTicking();
+  if(!tickEnabled()) return;
+  await ensureAudio();
+  tickInterval = setInterval(() => {
+    if (!tickEnabled() || !currentMode || isSubmitted || !audioCtx) return;
+    tone(920,0.03,"square",0.012,0);
+  }, 900);
+}
 function stopTicking(){ if(tickInterval) { clearInterval(tickInterval); tickInterval = null; } }
-function playMusicPattern(){ if (!musicEnabled() || !currentMode || isSubmitted) return; ensureAudio(); const base = [523,659,784,659]; base.forEach((f,i)=> tone(f,0.22,"triangle",0.018,i*0.34)); tone(392,0.55,"sine",0.01,0); }
-function startMusic(){ stopMusic(); if(!musicEnabled()) return; playMusicPattern(); musicLoopId = setInterval(playMusicPattern, 1600); }
+async function playMusicPattern(){
+  if (!musicEnabled() || !currentMode || isSubmitted) return;
+  await ensureAudio();
+  const base = [523,659,784,659];
+  base.forEach((f,i)=> tone(f,0.22,"triangle",0.018,i*0.34));
+  tone(392,0.55,"sine",0.01,0);
+}
+async function startMusic(){
+  stopMusic();
+  if(!musicEnabled()) return;
+  await ensureAudio();
+  playMusicPattern();
+  musicLoopId = setInterval(() => {
+    if (!musicEnabled() || !currentMode || isSubmitted) return;
+    playMusicPattern();
+  }, 1600);
+}
 function stopMusic(){ if(musicLoopId){ clearInterval(musicLoopId); musicLoopId = null; } }
 function getModeTitle(mode) { return mode.replace("day","第") + "天｜閱讀素養互動學習"; }
 
@@ -194,7 +243,7 @@ function renderQuiz(){
     <div class="group-card">
       <div class="group-top"><div class="group-num">題組 ${gi+1}</div><div class="group-meta">${g.title}</div></div>
       <div class="tools">
-        <button class="btn-soft tool-btn" onclick="highlightSelection('passage-${gi}')">螢光筆標註</button>
+        <button class="btn-soft tool-btn" onclick="highlightSelection('passage-${gi}')">套用螢光筆</button>
         <button class="btn-home tool-btn" onclick="clearHighlights('passage-${gi}')">清除標註</button>
       </div>
       <div id="passage-${gi}" class="passage"><div class="passage-title">${g.title}</div>${g.passage.replace(/\n/g,"<br>")}</div>
@@ -218,18 +267,45 @@ function renderQuiz(){
   `).join("");
 }
 
-function highlightSelection(containerId){
+let savedRange = null;
+function saveCurrentSelection(){
   const selection = window.getSelection();
-  if (!selection || selection.rangeCount === 0 || selection.isCollapsed) { alert("請先在文章中選取想標註的文字。"); return; }
+  if (!selection || selection.rangeCount === 0 || selection.isCollapsed) return;
+  savedRange = selection.getRangeAt(0).cloneRange();
+}
+document.addEventListener("selectionchange", saveCurrentSelection);
+document.addEventListener("mouseup", saveCurrentSelection);
+document.addEventListener("touchend", () => setTimeout(saveCurrentSelection, 60));
+
+function highlightSelection(containerId){
   const container = document.getElementById(containerId);
-  const range = selection.getRangeAt(0);
+  if (!savedRange) { alert("請先在文章中選取想標註的文字。"); return; }
+  const range = savedRange.cloneRange();
   if (!container.contains(range.commonAncestorContainer)) { alert("請在該篇文章範圍內選字。"); return; }
-  try { const mark = document.createElement("mark"); mark.className = "hl"; range.surroundContents(mark); selection.removeAllRanges(); }
-  catch (e) { const mark = document.createElement("mark"); mark.className = "hl"; const contents = range.extractContents(); mark.appendChild(contents); range.insertNode(mark); selection.removeAllRanges(); }
+  try {
+    const mark = document.createElement("mark");
+    mark.className = "hl";
+    range.surroundContents(mark);
+  } catch (e) {
+    const mark = document.createElement("mark");
+    mark.className = "hl";
+    const contents = range.extractContents();
+    mark.appendChild(contents);
+    range.insertNode(mark);
+  }
+  const selection = window.getSelection();
+  if (selection) selection.removeAllRanges();
+  savedRange = null;
 }
 function clearHighlights(containerId){
   const container = document.getElementById(containerId);
-  container.querySelectorAll("mark.hl").forEach(mark => { const parent = mark.parentNode; while (mark.firstChild) parent.insertBefore(mark.firstChild, mark); parent.removeChild(mark); parent.normalize(); });
+  container.querySelectorAll("mark.hl").forEach(mark => {
+    const parent = mark.parentNode;
+    while (mark.firstChild) parent.insertBefore(mark.firstChild, mark);
+    parent.removeChild(mark);
+    parent.normalize();
+  });
+  savedRange = null;
 }
 function pickAnswer(gi, qi, oi){ if(isSubmitted) return; userAnswers[gi][qi] = oi; playClickSound(); renderQuiz(); updateStats(); }
 function updateStats(){ const flatAnswers = userAnswers.flat(); const answered = flatAnswers.filter(v => v !== null).length; $("answeredCount").textContent = `${answered} / 20`; $("progressBar").style.width = `${answered*5}%`; if(!isSubmitted){ $("currentScore").textContent = "0"; $("correctCount").textContent = "0"; } }
