@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>社會四下｜第一～三課整合互動式學習</title>
+  <style>
+    :root{
+      --bg:#fff8ef;
+      --card:#ffffff;
+      --main:#df7a1c;
+      --main-dark:#b75d0d;
+      --green:#4f9d69;
+      --blue:#4a7db8;
+      --red:#d85b5b;
+      --gold:#f4c542;
+      --soft:#f8efe4;
+      --line:#ead6bc;
+      --text:#333;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:"Noto Sans TC","Microsoft JhengHei",sans-serif;
+      background:linear-gradient(180deg,#fff8ef 0%,#fff1df 100%);
+      color:var(--text);
+    }
+    .container{
+      max-width:1100px;
+      margin:0 auto;
+      padding:20px;
+    }
+    .hero{
+      background:linear-gradient(135deg,#ef9838,#d86b12);
+      color:#fff;
+      border-radius:24px;
+      padding:24px;
+      box-shadow:0 10px 28px rgba(0,0,0,.08);
+      margin-bottom:20px;
+    }
+    .hero h1{
+      margin:0 0 10px;
+      font-size:2rem;
+    }
+    .hero p{
+      margin:6px 0;
+      line-height:1.8;
+    }
+    .tag-wrap{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+    .tag{
+      background:rgba(255,255,255,.18);
+      border:1px solid rgba(255,255,255,.3);
+      padding:8px 12px;
+      border-radius:999px;
+      font-size:.95rem;
+    }
+    .panel{
+      background:var(--card);
+      border:2px solid var(--line);
+      border-radius:18px;
+      padding:18px;
+      box-shadow:0 8px 18px rgba(0,0,0,.04);
+      margin-bottom:18px;
+    }
+    .section-title{
+      margin:0 0 12px;
+      color:var(--main-dark);
+      font-size:1.25rem;
+    }
+    .menu-grid,.summary-grid,.chest-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:14px;
+    }
+    .menu-card,.summary-card{
+      background:var(--soft);
+      border-radius:16px;
+      padding:16px;
+      border:1px solid var(--line);
+    }
+    .menu-card h3,.summary-card h3{
+      margin:0 0 8px;
+      color:var(--main-dark);
+    }
+    .summary-card ul{
+      margin:0;
+      padding-left:20px;
+      line-height:1.8;
+    }
+    .topbar{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:14px;
+    }
+    .stats{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .stat{
+      background:#fff;
+      border:2px solid var(--line);
+      border-radius:14px;
+      padding:12px 16px;
+      min-width:120px;
+      text-align:center;
+    }
+    .stat b{
+      display:block;
+      font-size:1.3rem;
+      color:var(--main-dark);
+    }
+    .progress-wrap{
+      width:100%;
+      background:#f3e1c9;
+      border-radius:999px;
+      overflow:hidden;
+      height:18px;
+      margin-top:6px;
+    }
+    .progress-bar{
+      height:100%;
+      width:0%;
+      background:linear-gradient(90deg,#f5b24b,#ea7b23);
+      transition:width .3s ease;
+    }
+    .question-card{
+      background:#fff;
+      border:2px solid var(--line);
+      border-radius:18px;
+      padding:20px;
+      margin-bottom:16px;
+    }
+    .question-head{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:flex-start;
+      margin-bottom:10px;
+      flex-wrap:wrap;
+    }
+    .q-number{
+      background:var(--main);
+      color:#fff;
+      padding:6px 12px;
+      border-radius:999px;
+      font-weight:700;
+      font-size:.95rem;
+    }
+    .q-points{
+      background:#fff3dd;
+      color:var(--main-dark);
+      border:1px solid #f0c98e;
+      padding:6px 12px;
+      border-radius:999px;
+      font-weight:700;
+      font-size:.95rem;
+    }
+    .question-text{
+      font-size:1.08rem;
+      line-height:1.85;
+      margin:10px 0 14px;
+      white-space:pre-line;
+    }
+    .lesson-chip{
+      display:inline-block;
+      margin-bottom:8px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:#f7efe4;
+      border:1px solid var(--line);
+      color:#8c5a20;
+      font-size:.9rem;
+      font-weight:700;
+    }
+    .options{
+      display:grid;
+      gap:10px;
+    }
+    .option{
+      border:2px solid #e8e0d4;
+      border-radius:14px;
+      padding:12px 14px;
+      cursor:pointer;
+      transition:.2s;
+      background:#fff;
+      line-height:1.7;
+    }
+    .option:hover{
+      border-color:#e4b16b;
+      background:#fffaf2;
+    }
+    .option.selected{
+      border-color:var(--blue);
+      background:#eef5ff;
+    }
+    .option.correct{
+      border-color:var(--green);
+      background:#edf8f0;
+    }
+    .option.wrong{
+      border-color:var(--red);
+      background:#fff0f0;
+    }
+    .buttons{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:18px;
+    }
+    button{
+      border:none;
+      border-radius:14px;
+      padding:12px 18px;
+      font-size:1rem;
+      font-weight:700;
+      cursor:pointer;
+      transition:.2s;
+    }
+    .btn-main{background:var(--main);color:#fff}
+    .btn-main:hover{background:var(--main-dark)}
+    .btn-sub{
+      background:#fff4e6;
+      color:var(--main-dark);
+      border:2px solid #f2c489;
+    }
+    .btn-sub:hover{background:#ffe9cb}
+    .btn-green{background:var(--green);color:#fff}
+    .btn-blue{background:var(--blue);color:#fff}
+    .btn-home{
+      background:#fff;
+      color:var(--main-dark);
+      border:2px solid var(--line);
+    }
+
+    .explanation{
+      margin-top:14px;
+      padding:14px;
+      border-radius:14px;
+      line-height:1.8;
+      display:none;
+      border:1px solid #dcdcdc;
+      background:#fafafa;
+    }
+    .explanation.show{display:block}
+    .explanation.correct{
+      background:#edf8f0;
+      border-color:#b9e0c3;
+    }
+    .explanation.wrong{
+      background:#fff0f0;
+      border-color:#f0b7b7;
+    }
+    .result{
+      display:none;
+    }
+    .result.show{
+      display:block;
+    }
+    .result-box{
+      text-align:center;
+      padding:24px;
+      border-radius:20px;
+      background:linear-gradient(180deg,#fffdf8,#fff3dd);
+      border:2px solid #f0d29c;
+    }
+    .score-big{
+      font-size:3rem;
+      font-weight:800;
+      color:var(--main-dark);
+      margin:8px 0;
+    }
+    .medal{
+      font-size:3rem;
+      margin-bottom:8px;
+    }
+    .result-text{
+      font-size:1.1rem;
+      line-height:1.8;
+      margin:12px auto;
+      max-width:760px;
+    }
+    .reward-rule{
+      margin-top:14px;
+      padding:14px;
+      background:#fff8e7;
+      border:1px solid #f0d29c;
+      border-radius:14px;
+      line-height:1.9;
+      text-align:left;
+    }
+    .chest-area{display:none;margin-top:18px}
+    .chest-area.show{display:block}
+    .chest{
+      background:linear-gradient(180deg,#ffe7a8,#f4c542);
+      border:2px solid #d9a620;
+      border-radius:18px;
+      min-height:140px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      font-size:1.1rem;
+      font-weight:800;
+      cursor:pointer;
+      box-shadow:0 8px 18px rgba(0,0,0,.08);
+      transition:transform .15s ease, box-shadow .15s ease;
+      user-select:none;
+      text-align:center;
+      padding:12px;
+    }
+    .chest:hover{
+      transform:translateY(-3px);
+      box-shadow:0 12px 22px rgba(0,0,0,.12);
+    }
+    .chest.opened{
+      background:linear-gradient(180deg,#fff7de,#fff0bc);
+      border-color:#d8c07a;
+      cursor:default;
+      transform:none;
+    }
+    .chest .emoji{
+      font-size:2.2rem;
+      margin-bottom:8px;
+    }
+    .review-list{
+      text-align:left;
+      margin-top:18px;
+      display:grid;
+      gap:10px;
+    }
+    .review-item{
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:#fff;
+    }
+    .ok{color:var(--green);font-weight:700}
+    .bad{color:var(--red);font-weight:700}
+    .mini{
+      font-size:.92rem;
+      color:#666;
+    }
+    .footer-note{
+      font-size:.95rem;
+      color:#666;
+      line-height:1.8;
+      margin-top:8px;
+    }
+    .hidden{display:none !important}
+
+    @media (max-width:700px){
+      .hero h1{font-size:1.55rem}
+      .question-text{font-size:1rem}
+      .score-big{font-size:2.4rem}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="hero">
+      <h1>社會四下｜第一～三課整合互動式學習</h1>
+      <p><b>內容：</b>第一課農漁畜牧業、第二課工業、第三課服務業、三課綜合挑戰</p>
+      <p><b>特色：</b>單一檔案、可直接放 GitHub Pages、共用計分與解析，綜合挑戰含寶箱獎勵。</p>
+      <div class="tag-wrap">
+        <div class="tag">單課練習</div>
+        <div class="tag">綜合挑戰</div>
+        <div class="tag">反推題</div>
+        <div class="tag">邏輯思考</div>
+        <div class="tag">寶箱亂數</div>
+      </div>
+    </section>
+
+    <section id="homeSection" class="panel">
+      <h2 class="section-title">選擇模式</h2>
+      <div class="menu-grid">
+        <div class="menu-card">
+          <h3>第一課｜農、漁、畜牧業</h3>
+          <p>自然環境、農漁畜牧分類、轉型、食品安全。</p>
+          <div class="buttons">
+            <button class="btn-main" onclick="startMode('lesson1')">開始</button>
+          </div>
+        </div>
+        <div class="menu-card">
+          <h3>第二課｜工業</h3>
+          <p>工業加工、早期與現代工業、自動化、無塵室、品牌研發。</p>
+          <div class="buttons">
+            <button class="btn-main" onclick="startMode('lesson2')">開始</button>
+          </div>
+        </div>
+        <div class="menu-card">
+          <h3>第三課｜服務業</h3>
+          <p>服務方式改變、科技影響、新興職業、物品形成流程。</p>
+          <div class="buttons">
+            <button class="btn-main" onclick="startMode('lesson3')">開始</button>
+          </div>
+        </div>
+        <div class="menu-card">
+          <h3>綜合挑戰｜第一～三課</h3>
+          <p>三課整合推理，達指定分數可開寶箱。</p>
+          <div class="buttons">
+            <button class="btn-green" onclick="startMode('combined')">開始挑戰</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="summarySection" class="panel hidden">
+      <h2 class="section-title" id="summaryTitle">重點速讀</h2>
+      <div id="summaryGrid" class="summary-grid"></div>
+    </section>
+
+    <section id="quizSection" class="hidden">
+      <div class="panel">
+        <div class="topbar">
+          <div class="stats">
+            <div class="stat">已作答<b id="answeredCount">0 / 20</b></div>
+            <div class="stat">目前分數<b id="currentScore">0</b></div>
+            <div class="stat">正確題數<b id="correctCount">0</b></div>
+          </div>
+          <div style="flex:1; min-width:240px;">
+            <div class="mini">作答進度</div>
+            <div class="progress-wrap">
+              <div id="progressBar" class="progress-bar"></div>
+            </div>
+          </div>
+        </div>
+        <div class="buttons" style="margin-top:0;">
+          <button class="btn-home" onclick="goHome()">回首頁</button>
+          <button class="btn-sub" onclick="resetCurrentMode()">重新作答</button>
+        </div>
+      </div>
+
+      <div id="quizContainer"></div>
+
+      <div class="panel">
+        <div class="buttons">
+          <button class="btn-main" onclick="submitQuiz()">交卷計分</button>
+          <button class="btn-blue" onclick="window.scrollTo({top:0,behavior:'smooth'})">回到上方</button>
+        </div>
+        <p class="footer-note" id="modeHint"></p>
+      </div>
+    </section>
+
+    <section id="resultSection" class="result">
+      <div class="panel result-box">
+        <div id="medal" class="medal">📚</div>
+        <h2>本次成績</h2>
+        <div id="finalScore" class="score-big">0</div>
+        <div id="gradeText" class="result-text"></div>
+
+        <div id="rewardRule" class="reward-rule hidden">
+          <b>寶箱規則</b><br>
+          80 分或 85 分：可選 1 個寶箱<br>
+          90 分或 95 分：可選 2 個寶箱<br>
+          100 分：可選 3 個寶箱<br>
+          每次重玩都會重新亂數配置寶箱內容。
+        </div>
+
+        <div id="rewardStatus" style="margin-top:14px;font-weight:700;color:#8a520d;"></div>
+
+        <div id="chestArea" class="chest-area">
+          <h3 style="margin-top:18px;color:#b75d0d;">🎁 獎勵寶箱</h3>
+          <div class="mini">5 個寶箱中有 4 個是「貓戰代練10分鐘」，1 個是「貓罐頭33元」。</div>
+          <div id="chestGrid" class="chest-grid"></div>
+        </div>
+
+        <div class="buttons" style="justify-content:center;">
+          <button class="btn-main" onclick="resetCurrentMode()">再挑戰一次</button>
+          <button class="btn-green" onclick="scrollToReview()">看錯題整理</button>
+          <button class="btn-home" onclick="goHome()">回首頁</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2 class="section-title">錯題與重點回顧</h2>
+        <div id="reviewList" class="review-list"></div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const summaries = {
+      lesson1: [
+        { title: "第一課核心", bullets: ["自然環境不同，產業發展不同。", "農業種植作物，漁業捕撈或養殖，畜牧業飼養動物。", "和生活中的食物來源密切相關。"] },
+        { title: "最常考", bullets: ["平原→較適合農業。", "沿海→較容易發展漁業。", "肉、蛋、奶→畜牧業。"] },
+        { title: "轉型原因", bullets: ["科技進步。", "病蟲害、環境改變。", "提高品質與產量。"] },
+        { title: "食品安全", bullets: ["產銷履歷可追查來源。", "消費者更重視品質與安全。", "品牌與認證能增加信任。"] }
+      ],
+      lesson2: [
+        { title: "第二課核心", bullets: ["工業是把原料加工製造成產品。", "工業產品和生活密切相關。", "現代工業重視效率、品質、創新。"] },
+        { title: "早期 vs 現代", bullets: ["早期工業：人力多、速度慢。", "現代工業：機器多、自動化。", "工人角色轉為監控、操作、維修。"] },
+        { title: "轉型原因", bullets: ["科技進步。", "人力成本提高。", "想提高產量、降低成本、提升品質。"] },
+        { title: "特色考點", bullets: ["無塵室是為保護精密產品。", "品牌、研發、新材料可提升競爭力。", "自動化不等於完全不需要人。"] }
+      ],
+      lesson3: [
+        { title: "第三課核心", bullets: ["服務業滿足居民生活需求。", "和食、衣、住、行、育、樂都有關。", "重點不是製造，而是提供便利與協助。"] },
+        { title: "服務方式改變", bullets: ["同一種需求可有不同服務方式。", "如網購、外送、快剪、網銀、App 叫車。", "和需求改變、科技進步有關。"] },
+        { title: "科技影響", bullets: ["讓服務更多元、更快速。", "線上學習、行動支付更普及。", "也帶來新興職業。"] },
+        { title: "探究題", bullets: ["商品形成有流程。", "從原料到販售要經過許多步驟。", "背後有不同工作的人合作。"] }
+      ],
+      combined: [
+        { title: "綜合主線", bullets: ["第一課看自然環境與食物來源。", "第二課看加工製造與工業轉型。", "第三課看生活便利與服務多元化。"] },
+        { title: "最常見反推", bullets: ["看到結果，反推原因。", "看到原因，推方法。", "看到情境，判斷是哪一課。"] },
+        { title: "跨課整合", bullets: ["農產品可成為工業原料。", "工業製成商品，再透過服務業販售。", "三課其實可以串成一條生活流程。"] },
+        { title: "答題技巧", bullets: ["先分辨在考農、工、服務哪一類。", "抓關鍵字：自然環境、加工、科技、便利。", "注意題目問的是原因、方法還是結果。"] }
+      ]
+    };
+
+    const questionsByMode = {
+      lesson1: [
+        {lesson:"第一課｜農漁畜牧",points:5,question:"某地地勢平坦、水源充足、土壤肥沃，居民多種植稻米、蔬菜與水果。從這些線索判斷，當地最可能發展哪一類產業？",options:["農業","漁業","畜牧業","工業"],answer:0,explanation:"平坦、水源充足、土壤肥沃都很適合耕作，因此最可能發展農業。"},
+        {lesson:"第一課｜農漁畜牧",points:5,question:"某養殖池能控制水溫、含氧量與環境，使魚蝦生長更穩定。從結果反推，這樣做的主要目的最可能是什麼？",options:["改成種水果","改善養殖環境，提高品質與產量","讓漁業消失","讓魚變少"],answer:1,explanation:"控制養殖環境是為了讓生長更穩定，進而提高產量與品質。"},
+        {lesson:"第一課｜農漁畜牧",points:5,question:"下列哪一個推論最合理？\n甲：沿海地區較容易發展漁業。\n乙：平原地區較容易發展種植作物。\n丙：所有產業都完全不受自然環境影響。",options:["只有甲對","只有乙對","甲和乙對，丙錯","甲乙丙都對"],answer:2,explanation:"自然環境會影響產業發展，因此甲、乙正確，丙錯。"},
+        {lesson:"第一課｜農漁畜牧",points:5,question:"某品牌雞蛋強調雞舍清潔、定期消毒與來源清楚。從消費者角度看，這最主要是在回應哪種需求？",options:["想看起來更大","食品安全與品質安心","讓雞蛋飛起來","改成工業產品"],answer:1,explanation:"這些資訊主要是讓消費者對食品安全與品質更安心。"},
+        {lesson:"第一課｜農漁畜牧",points:5,question:"某地原本只種水果，後來加入採果體驗、販售果醬與導覽活動。這樣的改變最能說明什麼？",options:["農業可以結合其他方式提升價值","農業消失了","農業只能種植","水果不再是農產品"],answer:0,explanation:"這是農業轉型與增加附加價值的典型例子。"},
+        {lesson:"第一課｜農漁畜牧",points:5,question:"如果題目提到『牛奶、雞蛋、豬肉』，你最應該先想到哪一類產業？",options:["農業","漁業","畜牧業","林業"],answer:2,explanation:"牛奶、雞蛋、豬肉都來自家畜家禽，屬於畜牧業。"},
+        {lesson:"第一課｜農漁畜牧",points:5,question:"小琳在超市看到蔬菜上有 QR Code，掃描後能看到產地、生產者、包裝日期等資訊。這項制度最主要的作用是什麼？",options:["讓蔬菜看起來比較漂亮","讓產品能追查來源，提升消費者信心","保證所有蔬菜都比較便宜","表示這一定是進口商品"],answer:1,explanation:"這是產銷履歷的精神：讓產品來源與生產過程可追查，讓消費者買得安心。"},
+        {lesson:"第一課｜農漁畜牧",points:5,question:"某地區靠海，居民常清晨出海捕魚，也有人在魚塭養殖虱目魚。從這些線索判斷，這個地方最可能發展哪兩種工作？",options:["農業和林業","漁撈漁業和養殖漁業","畜牧業和礦業","觀光業和建築業"],answer:1,explanation:"題目同時出現「出海捕魚」與「魚塭養殖」，前者是漁撈漁業，後者是養殖漁業。"},
+        {lesson:"第一課｜農漁畜牧",points:5,question:"居民會因為下列哪一項不同，而發展出不同的產業？",options:["衣服顏色","自然環境","喜歡的卡通","年紀大小"],answer:1,explanation:"不同地區因自然環境不同，會發展出不同的產業。"},
+        {lesson:"第一課｜農漁畜牧",points:5,question:"現代農、漁、畜牧業常加入科技設備，最主要的好處是什麼？",options:["讓工作消失","提高生產效率與品質","讓產品變小","讓價格一定最低"],answer:1,explanation:"科技能提升效率、穩定品質，也有助於改善生產方式。"}
+      ],
+      lesson2: [
+        {lesson:"第二課｜工業",points:5,question:"某工廠過去需要很多工人手工搬運與包裝，現在改成自動輸送帶與機器設備，只剩少數人監控。這最能說明什麼？",options:["工業和生活無關","工業由人力密集轉向自動化","工業改成農業","工人完全不需要了"],answer:1,explanation:"這是在考現代工業轉型：由大量人力操作，轉為機器生產與少數人監控。"},
+        {lesson:"第二課｜工業",points:5,question:"某產品製造時要求員工穿防塵衣、戴帽子，並嚴格控制空氣中的灰塵。若從原因反推，最合理的解釋是什麼？",options:["為了種菜","為了保護精密產品品質","因為工廠很冷","為了讓產品變重"],answer:1,explanation:"這是在考無塵室概念，目的在於避免灰塵影響精密產品品質。"},
+        {lesson:"第二課｜工業",points:5,question:"如果一間工廠從代工轉向推出自己的品牌商品，最可能想達成什麼目標？",options:["降低辨識度","提升附加價值與市場競爭力","停止研發","讓產品更難賣"],answer:1,explanation:"自有品牌能提升辨識度、附加價值與市場競爭力。"},
+        {lesson:"第二課｜工業",points:5,question:"若一間工廠導入更多機器，是因為人力成本提高、又希望增加產量。從原因推方法，最合理的做法是什麼？",options:["全部改回手工","導入自動化設備","停止生產","減少品質管理"],answer:1,explanation:"人力成本提高又想增加產量，最合理的方法通常是導入自動化設備。"},
+        {lesson:"第二課｜工業",points:5,question:"老師說：『現代工業不只要做得出來，還要做得快、做得穩、做得有特色。』這句話最接近哪個重點？",options:["現代工業重視效率、品質與創新","現代工業只靠人力","現代工業和品牌無關","現代工業不必考慮市場"],answer:0,explanation:"這句話總結的是現代工業重視效率、品質、創新與競爭力。"},
+        {lesson:"第二課｜工業",points:5,question:"某工廠把麵粉、糖、奶油等原料加工成餅乾，再包裝送到商店販售。這最符合哪一種產業活動？",options:["農業，因為有食物","工業，因為把原料加工製造成產品","漁業，因為需要水","畜牧業，因為用了奶油"],answer:1,explanation:"工業的重點是將原料加工製造成產品。"},
+        {lesson:"第二課｜工業",points:5,question:"某工廠發現人工成本愈來愈高，因此評估導入更多機器設備。這個決定最主要是因為什麼？",options:["想讓工人更忙","想減少人力不足或成本上升帶來的壓力","想把工業改成服務業","想讓產品品質變得不穩定"],answer:1,explanation:"人力成本提高，是工業導入機器、自動化的重要原因之一。"},
+        {lesson:"第二課｜工業",points:5,question:"有一家工廠不只製造原本的產品，還不斷改良材質、增加新功能、建立品牌。這最符合下列哪一種觀念？",options:["創新研發與提升競爭力","停止發展","回到全部手工製作","只要數量，不管品質"],answer:0,explanation:"改良材質、增加功能、建立品牌，都是現代工業提升競爭力的重要方式。"},
+        {lesson:"第二課｜工業",points:5,question:"下列哪一組『原因 → 轉型方式』配對最合理？",options:["灰塵影響品質 → 建立無塵室","想提高產量 → 減少設備","人力成本高 → 全部改手工","市場競爭激烈 → 停止研發"],answer:0,explanation:"灰塵影響精密產品品質時，建立無塵室是合理對應做法。"},
+        {lesson:"第二課｜工業",points:5,question:"某工業產品強調使用環保材質、減少浪費、並能回收再利用。這最可能反映哪一種現代工業趨勢？",options:["只追求外觀","工業和環保無關","重視環保與永續發展","產品越做越重"],answer:2,explanation:"使用環保材質、減少浪費、回收再利用，屬於現代工業重視環保與永續的表現。"}
+      ],
+      lesson3: [
+        {lesson:"第三課｜服務業",points:5,question:"阿姨用手機下單買晚餐，餐點直接送到家。這個情境最能說明哪個概念？",options:["工業自動化","同一種需求有不同服務方式","農業轉型","畜牧業改良品種"],answer:1,explanation:"買晚餐這個需求沒有變，但服務方式從到店購買變成手機下單、外送到家。"},
+        {lesson:"第三課｜服務業",points:5,question:"銀行除了櫃檯服務，還有 ATM、網路銀行與行動支付。這些改變最主要是因為什麼？",options:["居民希望更方便，加上科技進步","大家不需要金融服務了","銀行要改成工廠","服務變少了"],answer:0,explanation:"科技進步與居民追求便利，是金融服務多元化的重要原因。"},
+        {lesson:"第三課｜服務業",points:5,question:"有人負責拍影片、剪輯、上傳平台並和觀眾互動。這最可能是哪一種工作？",options:["漁夫","網路媒體從業人員或 YouTuber","工廠作業員","牧場主人"],answer:1,explanation:"這是科技發展帶來的新興職業之一。"},
+        {lesson:"第三課｜服務業",points:5,question:"同樣是剪頭髮，有人選擇快剪店，有人選擇美髮設計店。這最能說明什麼？",options:["所有人需求都一樣","不同人重視的服務內容不同","剪頭髮不算服務業","科技讓理髮消失"],answer:1,explanation:"有人重視快速方便，有人重視造型與設計，顯示同一需求有不同服務方式。"},
+        {lesson:"第三課｜服務業",points:5,question:"某人用網購買衣服、用 App 叫車、用線上課程學習。這個情境最能反映哪個現象？",options:["生活需求變少","服務業因科技而變得更多元","工業完全取代服務業","農業和服務業一樣"],answer:1,explanation:"網購、App 叫車、線上課程都說明科技讓服務業更快速、便利、多元。"},
+        {lesson:"第三課｜服務業",points:5,question:"下列哪一項最符合『服務業』？",options:["把布料做成衣服","種植水稻","提供顧客購物、付款與查詢服務","捕撈魚群"],answer:2,explanation:"服務業的重點是提供服務，不是種植、捕撈或加工製造。"},
+        {lesson:"第三課｜服務業",points:5,question:"現在有些學生不一定到教室上課，也可以透過視訊在家學習。這最能說明哪一項？",options:["教育服務的方式因科技而更多元","老師已經不需要了","所有課程都只能線上","教育不算服務業"],answer:0,explanation:"線上教學就是科技改變服務方式的例子。"},
+        {lesson:"第三課｜服務業",points:5,question:"某家餐廳提供內用、外帶、外送三種方式。這最能說明什麼？",options:["服務業的方式可以依需求調整","餐廳一定比較便宜","外送不是服務","所有客人都喜歡一樣的方式"],answer:0,explanation:"內用、外帶、外送正是同一種需求下，發展出不同服務方式的例子。"},
+        {lesson:"第三課｜服務業",points:5,question:"如果某種服務能讓人節省排隊時間、快速完成事情，最可能會受到歡迎的原因是什麼？",options:["因為現代人生活節奏較快，重視效率","因為大家變得更閒","因為沒有人在乎時間","因為服務內容變少"],answer:0,explanation:"現代人常希望節省時間、提高效率，所以快速方便的服務容易受到歡迎。"},
+        {lesson:"第三課｜服務業",points:5,question:"生活中的物品從原料到最後販售，通常需要經過許多步驟。這個觀念最主要在說明什麼？",options:["物品會自己出現在商店","商品形成需要不同工作的人分工合作","只有商店最重要","消費者和商品無關"],answer:1,explanation:"從原料、生產、加工、運送到販售，背後需要許多不同工作者共同完成。"}
+      ],
+      combined: [
+        {lesson:"第一課｜農漁畜牧",points:5,question:"某地地勢平坦、水源充足、土壤肥沃，居民多種植稻米、蔬菜與水果。從這些線索判斷，當地最可能發展哪一類產業？",options:["農業","漁業","畜牧業","工業"],answer:0,explanation:"平坦、水源充足、土壤肥沃都很適合耕作，因此最可能發展農業。"},
+        {lesson:"第二課｜工業",points:5,question:"某工廠過去需要很多工人手工搬運與包裝，現在改成自動輸送帶與機器設備，只剩少數人監控。這最能說明什麼？",options:["工業和生活無關","工業由人力密集轉向自動化","工業改成農業","工人完全不需要了"],answer:1,explanation:"這是在考現代工業轉型：由大量人力操作，轉為機器生產與少數人監控。"},
+        {lesson:"第三課｜服務業",points:5,question:"阿姨用手機下單買晚餐，餐點直接送到家。這個情境最能說明哪個概念？",options:["工業自動化","同一種需求有不同服務方式","農業轉型","畜牧業改良品種"],answer:1,explanation:"買晚餐這個需求沒有變，但服務方式從到店購買變成手機下單、外送到家。"},
+        {lesson:"第一課｜農漁畜牧",points:5,question:"某養殖池能控制水溫、含氧量與環境，使魚蝦生長更穩定。從結果反推，這樣做的主要目的最可能是什麼？",options:["改成種水果","改善養殖環境，提高品質與產量","讓漁業消失","讓魚變少"],answer:1,explanation:"控制養殖環境是為了讓生長更穩定，進而提高產量與品質。"},
+        {lesson:"第二課｜工業",points:5,question:"某產品製造時要求員工穿防塵衣、戴帽子，並嚴格控制空氣中的灰塵。若從原因反推，最合理的解釋是什麼？",options:["為了種菜","為了保護精密產品品質","因為工廠很冷","為了讓產品變重"],answer:1,explanation:"這是在考無塵室概念，目的在於避免灰塵影響精密產品品質。"},
+        {lesson:"第三課｜服務業",points:5,question:"銀行除了櫃檯服務，還有 ATM、網路銀行與行動支付。這些改變最主要是因為什麼？",options:["居民希望更方便，加上科技進步","大家不需要金融服務了","銀行要改成工廠","服務變少了"],answer:0,explanation:"科技進步與居民追求便利，是金融服務多元化的重要原因。"},
+        {lesson:"第一課｜農漁畜牧",points:5,question:"下列哪一個推論最合理？\n甲：沿海地區較容易發展漁業。\n乙：平原地區較容易發展種植作物。\n丙：所有產業都完全不受自然環境影響。",options:["只有甲對","只有乙對","甲和乙對，丙錯","甲乙丙都對"],answer:2,explanation:"自然環境會影響產業發展，因此甲、乙正確，丙錯。"},
+        {lesson:"第二課｜工業",points:5,question:"如果一間工廠從代工轉向推出自己的品牌商品，最可能想達成什麼目標？",options:["降低辨識度","提升附加價值與市場競爭力","停止研發","讓產品更難賣"],answer:1,explanation:"自有品牌能提升辨識度、附加價值與市場競爭力。"},
+        {lesson:"第三課｜服務業",points:5,question:"有人負責拍影片、剪輯、上傳平台並和觀眾互動。這最可能是哪一種工作？",options:["漁夫","網路媒體從業人員或 YouTuber","工廠作業員","牧場主人"],answer:1,explanation:"這是科技發展帶來的新興職業之一。"},
+        {lesson:"綜合判斷",points:5,question:"『把原料加工成產品』、『提供居民購物和付款的便利』、『飼養動物取得肉蛋奶』，以上三句依序最可能對應哪三類產業？",options:["工業、服務業、畜牧業","服務業、工業、農業","農業、工業、漁業","漁業、服務業、工業"],answer:0,explanation:"把原料加工成產品是工業；提供便利是服務業；飼養動物取得肉蛋奶是畜牧業。"},
+        {lesson:"綜合判斷",points:5,question:"某地區居民先利用農產品作為原料，再送到工廠加工成食品，最後透過商店與外送平台賣給消費者。這條敘述最完整呈現了什麼？",options:["只和第一課有關","只和第二課有關","農業、工業、服務業彼此有關聯","三課內容彼此無關"],answer:2,explanation:"這題把第一課的原料生產、第二課的加工、第三課的販售與服務串在一起。"},
+        {lesson:"第一課｜農漁畜牧",points:5,question:"某品牌雞蛋強調雞舍清潔、定期消毒與來源清楚。從消費者角度看，這最主要是在回應哪種需求？",options:["想看起來更大","食品安全與品質安心","讓雞蛋飛起來","改成工業產品"],answer:1,explanation:"這些資訊主要是讓消費者對食品安全與品質更安心。"},
+        {lesson:"第二課｜工業",points:5,question:"若一間工廠導入更多機器，是因為人力成本提高、又希望增加產量。從原因推方法，最合理的做法是什麼？",options:["全部改回手工","導入自動化設備","停止生產","減少品質管理"],answer:1,explanation:"人力成本提高又想增加產量，最合理的方法通常是導入自動化設備。"},
+        {lesson:"第三課｜服務業",points:5,question:"同樣是剪頭髮，有人選擇快剪店，有人選擇美髮設計店。這最能說明什麼？",options:["所有人需求都一樣","不同人重視的服務內容不同","剪頭髮不算服務業","科技讓理髮消失"],answer:1,explanation:"有人重視快速方便，有人重視造型與設計，顯示同一需求有不同服務方式。"},
+        {lesson:"綜合判斷",points:5,question:"下列哪一題最像『由結果反推原因』的思考方式？",options:["看到很多人用手機叫車，推論科技改變交通服務","背出工業的定義","寫出農業兩個例子","說出一種水果名稱"],answer:0,explanation:"從『很多人用手機叫車』這個結果，反推原因是科技進步與服務方式改變。"},
+        {lesson:"第一課｜農漁畜牧",points:5,question:"某地原本只種水果，後來加入採果體驗、販售果醬與導覽活動。這樣的改變最能說明什麼？",options:["農業可以結合其他方式提升價值","農業消失了","農業只能種植","水果不再是農產品"],answer:0,explanation:"這是農業轉型與增加附加價值的典型例子。"},
+        {lesson:"第二課｜工業",points:5,question:"老師說：『現代工業不只要做得出來，還要做得快、做得穩、做得有特色。』這句話最接近哪個重點？",options:["現代工業重視效率、品質與創新","現代工業只靠人力","現代工業和品牌無關","現代工業不必考慮市場"],answer:0,explanation:"這句話總結的是現代工業重視效率、品質、創新與競爭力。"},
+        {lesson:"第三課｜服務業",points:5,question:"某人用網購買衣服、用 App 叫車、用線上課程學習。這個情境最能反映哪個現象？",options:["生活需求變少","服務業因科技而變得更多元","工業完全取代服務業","農業和服務業一樣"],answer:1,explanation:"網購、App 叫車、線上課程都說明科技讓服務業更快速、便利、多元。"},
+        {lesson:"綜合判斷",points:5,question:"若考題問：『為什麼現在許多產業都要重視品質、效率與消費者需求？』下列哪個回答最好？",options:["因為各產業都和居民生活、競爭與市場有關","因為只要會背就好","因為現在沒有科技","因為居民不會做選擇"],answer:0,explanation:"不論農、工、服務業，都與居民需求、市場競爭與生活品質有關，因此要重視品質、效率與需求。"},
+        {lesson:"綜合判斷",points:5,question:"下列哪一個分類最正確？\n甲：魚塭養殖\n乙：自動化工廠\n丙：網路銀行",options:["甲農業、乙服務業、丙工業","甲漁業、乙工業、丙服務業","甲畜牧業、乙農業、丙工業","甲服務業、乙工業、丙農業"],answer:1,explanation:"魚塭養殖是漁業；自動化工廠是工業；網路銀行屬於服務業。"}
+      ]
+    };
+
+    const modeHints = {
+      lesson1: "第一課重點：先看自然環境，再判斷是農業、漁業還是畜牧業；注意食品安全、產銷履歷與科技轉型。",
+      lesson2: "第二課重點：看到加工、機器、自動化、無塵室、研發品牌，大多是在考工業。",
+      lesson3: "第三課重點：看到外送、網購、線上、App、預約、自助，多半是在考服務方式改變與科技影響。",
+      combined: "綜合挑戰重點：先分辨題目是哪一課，再判斷是在問原因、方法或結果。"
+    };
+
+    let currentMode = null;
+    let currentQuestions = [];
+    let userAnswers = [];
+    let isSubmitted = false;
+
+    let chestRewards = [];
+    let openedCount = 0;
+    let allowedOpens = 0;
+    let openedIndexes = new Set();
+
+    const homeSection = document.getElementById("homeSection");
+    const summarySection = document.getElementById("summarySection");
+    const quizSection = document.getElementById("quizSection");
+    const resultSection = document.getElementById("resultSection");
+    const summaryTitle = document.getElementById("summaryTitle");
+    const summaryGrid = document.getElementById("summaryGrid");
+    const quizContainer = document.getElementById("quizContainer");
+    const answeredCount = document.getElementById("answeredCount");
+    const currentScore = document.getElementById("currentScore");
+    const correctCount = document.getElementById("correctCount");
+    const progressBar = document.getElementById("progressBar");
+    const modeHint = document.getElementById("modeHint");
+
+    function shuffle(array) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function getModeTitle(mode){
+      return {
+        lesson1:"第一課｜農、漁、畜牧業",
+        lesson2:"第二課｜工業",
+        lesson3:"第三課｜服務業",
+        combined:"綜合挑戰｜第一～三課"
+      }[mode];
+    }
+
+    function startMode(mode){
+      currentMode = mode;
+      currentQuestions = questionsByMode[mode];
+      userAnswers = Array(currentQuestions.length).fill(null);
+      isSubmitted = false;
+      allowedOpens = 0;
+      setupChests();
+      renderSummary(mode);
+      renderQuiz();
+      updateTopStats();
+
+      homeSection.classList.add("hidden");
+      summarySection.classList.remove("hidden");
+      quizSection.classList.remove("hidden");
+      resultSection.classList.remove("show");
+      document.getElementById("rewardRule").classList.add("hidden");
+      document.getElementById("chestArea").classList.remove("show");
+      document.getElementById("rewardStatus").textContent = "";
+      modeHint.textContent = modeHints[mode];
+      window.scrollTo({top:0,behavior:"smooth"});
+    }
+
+    function goHome(){
+      currentMode = null;
+      currentQuestions = [];
+      userAnswers = [];
+      isSubmitted = false;
+      allowedOpens = 0;
+      homeSection.classList.remove("hidden");
+      summarySection.classList.add("hidden");
+      quizSection.classList.add("hidden");
+      resultSection.classList.remove("show");
+      window.scrollTo({top:0,behavior:"smooth"});
+    }
+
+    function renderSummary(mode){
+      summaryTitle.textContent = getModeTitle(mode) + "｜重點速讀";
+      summaryGrid.innerHTML = "";
+      summaries[mode].forEach(card => {
+        const div = document.createElement("div");
+        div.className = "summary-card";
+        div.innerHTML = `
+          <h3>${card.title}</h3>
+          <ul>${card.bullets.map(b=>`<li>${b}</li>`).join("")}</ul>
+        `;
+        summaryGrid.appendChild(div);
+      });
+    }
+
+    function renderQuiz() {
+      quizContainer.innerHTML = "";
+      currentQuestions.forEach((q, index) => {
+        const card = document.createElement("div");
+        card.className = "question-card";
+
+        const head = document.createElement("div");
+        head.className = "question-head";
+        head.innerHTML = `
+          <div class="q-number">第 ${index + 1} 題</div>
+          <div class="q-points">${q.points} 分</div>
+        `;
+
+        const chip = document.createElement("div");
+        chip.className = "lesson-chip";
+        chip.textContent = q.lesson;
+
+        const text = document.createElement("div");
+        text.className = "question-text";
+        text.textContent = q.question;
+
+        const options = document.createElement("div");
+        options.className = "options";
+
+        q.options.forEach((opt, i) => {
+          const option = document.createElement("div");
+          option.className = "option";
+          option.textContent = `${String.fromCharCode(65 + i)}. ${opt}`;
+
+          if (userAnswers[index] === i) option.classList.add("selected");
+
+          option.onclick = () => {
+            if (isSubmitted) return;
+            userAnswers[index] = i;
+            renderQuiz();
+            updateTopStats();
+          };
+
+          if (isSubmitted) {
+            if (i === q.answer) option.classList.add("correct");
+            if (userAnswers[index] === i && i !== q.answer) option.classList.add("wrong");
+          }
+
+          options.appendChild(option);
+        });
+
+        const explanation = document.createElement("div");
+        explanation.className = "explanation";
+
+        if (isSubmitted) {
+          const correct = userAnswers[index] === q.answer;
+          explanation.classList.add("show");
+          explanation.classList.add(correct ? "correct" : "wrong");
+          explanation.innerHTML = `
+            <b>${correct ? "答對了！" : "這題答錯了。"}</b><br>
+            正確答案：${String.fromCharCode(65 + q.answer)}<br>
+            ${q.explanation}
+          `;
+        }
+
+        card.appendChild(head);
+        card.appendChild(chip);
+        card.appendChild(text);
+        card.appendChild(options);
+        card.appendChild(explanation);
+        quizContainer.appendChild(card);
+      });
+    }
+
+    function updateTopStats() {
+      const answered = userAnswers.filter(a => a !== null).length;
+      answeredCount.textContent = `${answered} / ${currentQuestions.length || 0}`;
+      progressBar.style.width = `${currentQuestions.length ? (answered / currentQuestions.length) * 100 : 0}%`;
+
+      if (!isSubmitted) {
+        currentScore.textContent = "0";
+        correctCount.textContent = "0";
+      }
+    }
+
+    function getAllowedOpens(score) {
+      if (score === 80 || score === 85) return 1;
+      if (score === 90 || score === 95) return 2;
+      if (score === 100) return 3;
+      return 0;
+    }
+
+    function setupChests() {
+      chestRewards = shuffle([
+        "貓戰代練10分鐘",
+        "貓戰代練10分鐘",
+        "貓戰代練10分鐘",
+        "貓戰代練10分鐘",
+        "貓罐頭33元"
+      ]);
+      openedCount = 0;
+      openedIndexes = new Set();
+      renderChests();
+    }
+
+    function renderChests() {
+      const grid = document.getElementById("chestGrid");
+      grid.innerHTML = "";
+
+      chestRewards.forEach((reward, index) => {
+        const chest = document.createElement("div");
+        chest.className = "chest " + (openedIndexes.has(index) ? "opened" : "");
+
+        if (openedIndexes.has(index)) {
+          chest.innerHTML = `
+            <div class="emoji">${reward === "貓罐頭33元" ? "🥫" : "🐱"}</div>
+            <div>${reward}</div>
+          `;
+        } else {
+          chest.innerHTML = `
+            <div class="emoji">🎁</div>
+            <div>寶箱 ${index + 1}</div>
+          `;
+          chest.onclick = () => openChest(index);
+        }
+
+        grid.appendChild(chest);
+      });
+
+      const rewardStatus = document.getElementById("rewardStatus");
+      if (currentMode === "combined") {
+        if (allowedOpens > 0) {
+          rewardStatus.textContent = `你可以開 ${allowedOpens} 個寶箱，目前已開 ${openedCount} 個。`;
+        } else {
+          rewardStatus.textContent = "這次分數未達寶箱開啟門檻，再挑戰一次吧。";
+        }
+      } else {
+        rewardStatus.textContent = "";
+      }
+    }
+
+    function openChest(index) {
+      if (openedIndexes.has(index)) return;
+      if (openedCount >= allowedOpens) {
+        alert("這次可開的寶箱數量已用完。");
+        return;
+      }
+      openedIndexes.add(index);
+      openedCount++;
+      renderChests();
+    }
+
+    function submitQuiz() {
+      const unanswered = userAnswers
+        .map((a, i) => a === null ? i + 1 : null)
+        .filter(v => v !== null);
+
+      if (unanswered.length > 0) {
+        alert(`還有 ${unanswered.length} 題未作答：第 ${unanswered.join("、")} 題`);
+        return;
+      }
+
+      isSubmitted = true;
+      renderQuiz();
+
+      let score = 0;
+      let correct = 0;
+
+      currentQuestions.forEach((q, i) => {
+        if (userAnswers[i] === q.answer) {
+          score += q.points;
+          correct += 1;
+        }
+      });
+
+      currentScore.textContent = score;
+      correctCount.textContent = correct;
+      document.getElementById("finalScore").textContent = `${score} 分`;
+
+      const medal = document.getElementById("medal");
+      const gradeText = document.getElementById("gradeText");
+
+      if (score === 100) {
+        medal.textContent = "🏆";
+        gradeText.innerHTML = `${getModeTitle(currentMode)}：滿分！你的邏輯判斷、比較與反推都很穩。`;
+      } else if (score >= 90) {
+        medal.textContent = "🥇";
+        gradeText.innerHTML = `${getModeTitle(currentMode)}：非常強！核心概念掌握得很完整。`;
+      } else if (score >= 80) {
+        medal.textContent = "🥈";
+        gradeText.innerHTML = `${getModeTitle(currentMode)}：很不錯！再加強反推題與跨概念連結會更穩。`;
+      } else if (score >= 70) {
+        medal.textContent = "🥉";
+        gradeText.innerHTML = `${getModeTitle(currentMode)}：基礎概念有了，但題目一轉彎還要再練習。`;
+      } else if (score >= 60) {
+        medal.textContent = "🌱";
+        gradeText.innerHTML = `${getModeTitle(currentMode)}：已抓到部分重點，建議回去複習關鍵字與情境判讀。`;
+      } else {
+        medal.textContent = "📘";
+        gradeText.innerHTML = `${getModeTitle(currentMode)}：先別灰心，這份題目比較重思考。抓住主線後再挑戰一次。`;
+      }
+
+      const rewardRule = document.getElementById("rewardRule");
+      const chestArea = document.getElementById("chestArea");
+
+      if (currentMode === "combined") {
+        allowedOpens = getAllowedOpens(score);
+        rewardRule.classList.remove("hidden");
+        if (allowedOpens > 0) {
+          chestArea.classList.add("show");
+        } else {
+          chestArea.classList.remove("show");
+        }
+        renderChests();
+      } else {
+        rewardRule.classList.add("hidden");
+        chestArea.classList.remove("show");
+        document.getElementById("rewardStatus").textContent = "";
+      }
+
+      const reviewList = document.getElementById("reviewList");
+      reviewList.innerHTML = "";
+      currentQuestions.forEach((q, i) => {
+        const item = document.createElement("div");
+        item.className = "review-item";
+        const ok = userAnswers[i] === q.answer;
+        item.innerHTML = `
+          <div><b>第 ${i + 1} 題</b>　<span class="${ok ? 'ok' : 'bad'}">${ok ? '答對' : '答錯'}</span>　<span class="mini">｜${q.lesson}</span></div>
+          <div style="margin-top:6px;">${q.question.replace(/\n/g,"<br>")}</div>
+          <div style="margin-top:6px;"><b>正確答案：</b>${String.fromCharCode(65 + q.answer)}. ${q.options[q.answer]}</div>
+          <div style="margin-top:6px;" class="mini">${q.explanation}</div>
+        `;
+        reviewList.appendChild(item);
+      });
+
+      resultSection.classList.add("show");
+      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+    }
+
+    function resetCurrentMode() {
+      if (!currentMode) return;
+      startMode(currentMode);
+    }
+
+    function scrollToReview() {
+      document.getElementById("reviewList").scrollIntoView({ behavior: "smooth" });
+    }
+  </script>
+</body>
+</html>
